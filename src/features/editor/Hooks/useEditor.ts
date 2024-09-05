@@ -24,7 +24,7 @@ export const useEditor = () => {
         width: 900,
         height: 1200,
         name: "clip",
-        fill: "red",
+        fill: "white",
         selectable: false,
         hasControls: false,
         shadow: new fabric.Shadow({
@@ -34,9 +34,10 @@ export const useEditor = () => {
       });
 
       initialCanvas.setWidth(initialContainer.offsetWidth);
-      initialCanvas.setHeight(initialContainer.offsetHeight);
+      // initialCanvas.setHeight(initialContainer.offsetHeight);
+      initialCanvas.setHeight(1300);
 
-    //   console.log();
+    
 
       initialCanvas.add(initialWorkspace);
       initialCanvas.centerObject(initialWorkspace);
