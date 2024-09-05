@@ -1,7 +1,17 @@
+"use client";
 import { fabric } from "fabric";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { useAutoResize } from "./useAutoResize";
 
 export const useEditor = () => {
+  const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+
+  useAutoResize({
+    canvas,
+    container,
+  });
+
   const init = useCallback(
     ({
       initialCanvas,
@@ -20,7 +30,6 @@ export const useEditor = () => {
         cornerStrokeColor: "#3b82f6",
       });
 
-
       const initialWorkspace = new fabric.Rect({
         width: 900,
         height: 1200,
@@ -34,27 +43,29 @@ export const useEditor = () => {
         }),
       });
 
-      
       initialCanvas.setWidth(initialContainer.offsetWidth);
-      // initialCanvas.setHeight(initialContainer.offsetHeight);
-      initialCanvas.setHeight(1300);
+      initialCanvas.setHeight(initialContainer.offsetHeight);
       
-      
-      
+      console.log(initialContainer.offsetWidth, initialContainer.offsetHeight);
+
       initialCanvas.add(initialWorkspace);
       initialCanvas.centerObject(initialWorkspace);
       initialCanvas.clipPath = initialWorkspace;
-      const test = new fabric.Rect({
-        height:100,
-        width:100,
-        fill:"black"
-      })
 
-      initialCanvas.add(test)
-      initialCanvas.centerObject(test)
+      setCanvas(initialCanvas);
+      setContainer(initialContainer);
+
+      const test = new fabric.Rect({
+        height: 100,
+        width: 100,
+        fill: "black",
+      });
+
+      initialCanvas.add(test);
+      initialCanvas.centerObject(test);
     },
     []
   );
 
   return { init };
-};  
+};
