@@ -20,6 +20,7 @@ export const useEditor = () => {
         cornerStrokeColor: "#3b82f6",
       });
 
+
       const initialWorkspace = new fabric.Rect({
         width: 900,
         height: 1200,
@@ -33,15 +34,24 @@ export const useEditor = () => {
         }),
       });
 
+      
       initialCanvas.setWidth(initialContainer.offsetWidth);
       // initialCanvas.setHeight(initialContainer.offsetHeight);
       initialCanvas.setHeight(1300);
-
-    
-
+      
+      
+      
       initialCanvas.add(initialWorkspace);
       initialCanvas.centerObject(initialWorkspace);
       initialCanvas.clipPath = initialWorkspace;
+      const test = new fabric.Rect({
+        height:100,
+        width:100,
+        fill:"black"
+      })
+
+      initialCanvas.add(test)
+      initialCanvas.centerObject(test)
     },
     []
   );
