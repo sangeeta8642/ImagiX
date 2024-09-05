@@ -49,8 +49,7 @@ const Editor = () => {
         }
     }, [init])
 
-    // can you tell me why the width is being apply to the canvas but the initialCOntainer height is always being only 150px
-
+    
     return (
         <div className='flex h-full flex-col'>
             <Navbar
