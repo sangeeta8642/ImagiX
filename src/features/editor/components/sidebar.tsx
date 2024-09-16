@@ -45,6 +45,12 @@ const Sidebar = ({
                     onClick={() => onChangeActiveTool("text")}
                 />
                 <SidebarItem
+                    label="Draw"
+                    icon={Pencil}
+                    isActive={activeTool === 'draw'}
+                    onClick={() => onChangeActiveTool('draw')}
+                />
+                <SidebarItem
                     icon={Shapes}
                     label='Shapes'
                     isActive={activeTool === "shapes"}

@@ -1,6 +1,7 @@
 "use client"
-import React from 'react'
+import React from 'react';
 import Logo from '@/features/editor/components/logo'
+import { useFilePicker } from 'use-file-picker';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, MousePointerClick, Undo2, Redo2, Download } from 'lucide-react'
@@ -8,18 +9,78 @@ import { CiFileOn } from 'react-icons/ci'
 import { Separator } from '@/components/ui/separator'
 import Hint from '@/components/hint'
 import { BsCloudCheck } from 'react-icons/bs'
-import { ActiveTool } from '../type'
+import { ActiveTool, Editor } from '../type'
 import { cn } from '@/lib/utils'
 
 interface NavbarProps {
+    editor: Editor | undefined;
     activeTool: ActiveTool,
     onChangeActiveTool: (tool: ActiveTool) => void
 }
 
+
 export const Navbar = ({
+    editor,
     activeTool,
     onChangeActiveTool
 }: NavbarProps) => {
+
+    const { openFilePicker } = useFilePicker({
+        accept: '.json',
+        onFilesSuccessfullySelected: ({ plainFiles }: any) => {
+            if (plainFiles && plainFiles.length > 0) {
+                const file = plainFiles[0];
+                const reader = new FileReader();
+
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = () => {
+                    editor?.loadJson(reader.result as string);
+                };
+            }
+        }
+    });
+
+    /**
+     * Handles the JSON export action.
+     */
+    const handleExportJson = () => {
+        editor?.saveJson();
+    };
+
+    /**
+     * Handles the PNG export action.
+     */
+    const handleExportPng = () => {
+        editor?.savePng();
+    };
+
+    /**
+     * Handles the JPG export action.
+     */
+    const handleExportJpg = () => {
+        editor?.saveJpg();
+    };
+
+    /**
+     * Handles the SVG export action.
+     */
+    const handleExportSvg = () => {
+        editor?.saveSvg();
+    };
+
+
+    const handleUndo = () => {
+        editor?.undo();
+    };
+
+    /**
+     * Handles the redo action.
+     */
+    const handleRedo = () => {
+        editor?.redo();
+    };
+
+
     return (
         <nav className='w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]'>
             <Logo />
@@ -34,7 +95,7 @@ export const Navbar = ({
                     <DropdownMenuContent align='start' className='min-w-60' >
                         <DropdownMenuItem
                             className='flex items-center gap-x-2'
-                            onClick={() => { }}
+                            onClick={openFilePicker}
                         >
                             <CiFileOn className='size-8' />
                             <div>
@@ -51,8 +112,8 @@ export const Navbar = ({
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() =>onChangeActiveTool("select")}
-                        className={cn(activeTool==="select"&&"bg-gray-100")}
+                        onClick={() => onChangeActiveTool("select")}
+                        className={cn(activeTool === "select" && "bg-gray-100")}
                     >
                         <MousePointerClick className='size-4' />
                     </Button>
@@ -61,8 +122,8 @@ export const Navbar = ({
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => { }}
-                        className=''
+                        onClick={handleUndo}
+                        disabled={!editor?.canUndo()}
                     >
                         <Undo2 className='size-4' />
                     </Button>
@@ -71,8 +132,8 @@ export const Navbar = ({
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => { }}
-                        className=''
+                        onClick={handleRedo}
+                        disabled={!editor?.canRedo()}
                     >
                         <Redo2 className='size-4' />
                     </Button>
@@ -93,7 +154,7 @@ export const Navbar = ({
                         <DropdownMenuContent align="end" className="min-w-60" >
                             <DropdownMenuItem
                                 className='flex items-center gap-x-2'
-                                onClick={() => { }}
+                                onClick={handleExportJson}
                             >
                                 <CiFileOn className="size-8" />
                                 <div>
@@ -103,7 +164,7 @@ export const Navbar = ({
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 className='flex items-center gap-x-2'
-                                onClick={() => { }}
+                                onClick={handleExportPng}
                             >
                                 <CiFileOn className="size-8" />
                                 <div>
@@ -113,7 +174,7 @@ export const Navbar = ({
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 className='flex items-center gap-x-2'
-                                onClick={() => { }}
+                                onClick={handleExportJpg}
                             >
                                 <CiFileOn className="size-8" />
                                 <div>
@@ -123,7 +184,7 @@ export const Navbar = ({
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 className='flex items-center gap-x-2'
-                                onClick={() => { }}
+                                onClick={handleExportSvg}
                             >
                                 <CiFileOn className="size-8" />
                                 <div>
