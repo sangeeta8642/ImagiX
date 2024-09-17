@@ -2,9 +2,17 @@
 import { fabric } from "fabric";
 import { useCallback, useState, useMemo } from "react";
 import { useAutoResize } from "@/features/editor/Hooks/useAutoResize";
-import { buildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, FILL_COLOR, Filter, FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_WIDTH, TEXT_OPTIONS, TRIANGLE_OPTIONS } from "../type";
+import {
+  buildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, FILL_COLOR, Filter, FONT_FAMILY,
+  FONT_SIZE, FONT_WEIGHT, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_WIDTH, TEXT_OPTIONS, TRIANGLE_OPTIONS
+} from "../type";
 import { useCanvasEvents } from "@/features/editor/Hooks/useCanvasEvents";
-import { JSON_PROPERTY_KEYS, STROKE_DASH_ARRAY } from "../constants";
+import {
+  JSON_PROPERTY_KEYS, STROKE_DASH_ARRAY,
+  WORKSPACE_HEIGHT,
+  WORKSPACE_NAME,
+  WORKSPACE_WIDTH
+} from "../constants";
 import { useClipboard } from "@/features/editor/Hooks/useClipboard";
 import { useHistory } from "@/features/editor/Hooks/useHistory";
 import { useHotkeys } from "@/features/editor/Hooks/useHotKeys";
@@ -680,9 +688,9 @@ export const useEditor = ({ clearSelectionCallback }: UseEditorProps) => {
       });
 
       const initialWorkspace = new fabric.Rect({
-        width: 900,
-        height: 1200,
-        name: "clip",
+        width: WORKSPACE_WIDTH,
+        height: WORKSPACE_HEIGHT,
+        name: WORKSPACE_NAME,
         fill: "white",
         selectable: false,
         hasControls: false,

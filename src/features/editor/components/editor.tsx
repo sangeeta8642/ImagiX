@@ -21,10 +21,15 @@ import RemoveBgSidebar from './removebg-sidebar'
 import DrawSidebar from './draw-sidbar'
 import { SELECTION_DEPENDENT_TOOLS } from '../constants'
 import SettingsSidebar from './settings-sidebar'
+import { ResponseType2 } from '@/features/projects/hooks/query'
 
+interface EditorProps{
+    initialData:ResponseType2["data"]
+}
 
-
-const Editor = () => {
+const Editor = ({
+    initialData
+}:EditorProps) => {
     const [activeTool, setActiveTool] = useState<ActiveTool>("select")
 
     const handleClearSelection = useCallback(() => {

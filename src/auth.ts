@@ -1,95 +1,103 @@
-import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
-import Google from "next-auth/providers/google";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { z } from "zod";
-import Credentials from "next-auth/providers/credentials";
+// import NextAuth from "next-auth";
+// import GitHub from "next-auth/providers/github";
+// import Google from "next-auth/providers/google";
+// import { DrizzleAdapter } from "@auth/drizzle-adapter";
+// import { z } from "zod";
+// import Credentials from "next-auth/providers/credentials";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { JWT } from "next-auth/jwt";
-import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// import { JWT } from "next-auth/jwt";
+// import { eq } from "drizzle-orm";
+// import bcrypt from "bcryptjs";
 
-import { users } from "./db/schema";
-import { db } from "@/db/drizzle";
+// import { users } from "./db/schema";
+// import { db } from "@/db/drizzle";
 
-const CredentialsSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-});
+import NextAuth from 'next-auth';
+import authConfig from './auth.config';
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string | undefined;
-  }
-}
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: DrizzleAdapter(db),
-  providers: [
-    GitHub({
-      allowDangerousEmailAccountLinking: true,
-    }),
-    Google({
-      allowDangerousEmailAccountLinking: true,
-    }),
-    Credentials({
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      authorize: async (credentials) => {
-        const validatedFields = CredentialsSchema.safeParse(credentials);
+// const CredentialsSchema = z.object({
+//   email: z.string().email(),
+//   password: z.string(),
+// });
 
-        if (!validatedFields.success) {
-          return null;
-        }
+// declare module "next-auth/jwt" {
+//   interface JWT {
+//     id: string | undefined;
+//   }
+// }
 
-        const { email, password } = validatedFields.data;
+// export const { handlers, signIn, signOut, auth } = NextAuth(
+//   {
+//   adapter: DrizzleAdapter(db),
+//   providers: [
+//     GitHub({
+//       allowDangerousEmailAccountLinking: true,
+//     }),
+//     Google({
+//       allowDangerousEmailAccountLinking: true,
+//     }),
+//     Credentials({
+//       credentials: {
+//         email: { label: "Email", type: "email" },
+//         password: { label: "Password", type: "password" },
+//       },
+//       authorize: async (credentials) => {
+//         const validatedFields = CredentialsSchema.safeParse(credentials);
 
-        const [user] = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, email));
+//         if (!validatedFields.success) {
+//           return null;
+//         }
 
-        if (!user || !user.passwordHash) {
-          return null;
-        }
+//         const { email, password } = validatedFields.data;
 
-        const isPasswordMatch = await bcrypt.compare(
-          password,
-          user.passwordHash
-        );
+//         const [user] = await db
+//           .select()
+//           .from(users)
+//           .where(eq(users.email, email));
 
-        if (!isPasswordMatch) {
-          return null;
-        }
+//         if (!user || !user.passwordHash) {
+//           return null;
+//         }
 
-        return user;
-      },
-    }),
-  ],
-  pages: {
-    signIn: "/login",
-    error: "/login",
-  },
-  session: {
-    strategy: "jwt",
-  },
-  callbacks: {
-    jwt: ({ token, user }) => {
-      if (user) {
-        token.id = user.id;
-      }
+//         const isPasswordMatch = await bcrypt.compare(
+//           password,
+//           user.passwordHash
+//         );
 
-      return token;
-    },
-    session: ({ session, token }) => {
-      if (token.id) {
-        session.user.id = token.id;
-      }
+//         if (!isPasswordMatch) {
+//           return null;
+//         }
 
-      return session;
-    },
-  },
-});
+//         return user;
+//       },
+//     }),
+//   ],
+//   pages: {
+//     signIn: "/login",
+//     error: "/login",
+//   },
+//   session: {
+//     strategy: "jwt",
+//   },
+//   callbacks: {
+//     jwt: ({ token, user }) => {
+//       if (user) {
+//         token.id = user.id;
+//       }
+
+//       return token;
+//     },
+//     session: ({ session, token }) => {
+//       if (token.id) {
+//         session.user.id = token.id;
+//       }
+
+//       return session;
+//     },
+//   },
+// }
+// );
+
+export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);
